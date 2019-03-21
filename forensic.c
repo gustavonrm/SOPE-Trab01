@@ -15,14 +15,26 @@ int main (int argc, char *agrv[], char *envp[]){
 
   defStruct *def = new_defStruct();
   if (!def) {
-    fprintf(stderr, "2 Error allocating memory\n");
+    fprintf (stderr, "2 Error allocating memory\n");
     return -1;
   }
 
   int ret = 0;
   ret = parse_input (argc, agrv, def);
-  if(ret)
+  if (ret)
     printUsage (stderr);
+
+  if (def -> v_flag){
+    char *file_log;
+    file_log = getenv ("LOGFILENAME");
+
+    if (file_log != NULL) {
+      defStruct_log (def, file_log);
+    } else {
+      fprintf (stderr, "Environment variable not set, LOGFILENAME\n");
+      return -1;
+    }
+  }
 
   _print_struct (def);
 

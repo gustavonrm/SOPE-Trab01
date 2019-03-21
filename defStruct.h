@@ -31,6 +31,8 @@ int defStruct_hash(defStruct *def, char *algs);
 
 int defStruct_out (defStruct *def, char *file);
 
+int defStruct_log (defStruct *def, char *file);
+
 int defStruct_target (defStruct *def, char *target);
 
 void delete_defStruct(defStruct *def);
