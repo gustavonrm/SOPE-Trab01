@@ -7,7 +7,7 @@ typedef struct {
   int r_flag;
   
   int h_flag;
-  int *hash_alg;
+  int* hash_alg;
   
   int o_flag;
   char *file_out;

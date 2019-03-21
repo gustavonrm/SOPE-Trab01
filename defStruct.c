@@ -4,12 +4,18 @@
 
 #include "defStruct.h"
 
+#define SUCCESS     (0)
+#define ERROR_NULL  (NULL)
+#define ERROR_ALLOC (-1)
+#define ERROR_FILES (-2)
+#define ERROR_ALG   (-3)
+
 defStruct* new_defStruct(){
   defStruct* def;
 
   def = (defStruct*)malloc (sizeof (defStruct));
   if (!def)
-    return NULL; // change
+    return ERROR_NULL;
   
   def -> r_flag = false;
   
@@ -29,59 +35,63 @@ defStruct* new_defStruct(){
 
 int defStruct_hash (defStruct *def, char *algs) {
   if (def == NULL || algs == NULL)
-    return -1;
+    return ERROR_FILES;
 
-  def -> hash_alg = malloc (sizeof(bool) * 3);
-  if(!def -> hash_alg)
-    return -1;
-  
-  for (int i = 0; i < 3; i++) 
-    def -> hash_alg[i] = false;
+  def -> hash_alg = (int *)calloc (3, sizeof(def -> hash_alg));
+  if(def -> hash_alg == NULL)
+    return ERROR_ALLOC;
 
   char *tok;
   tok = strtok (algs, ",");
+  int alg = true;
 
   while (tok != NULL){
-    if (strcmp(tok, "md5") == 0){
+    if (strcmp(tok, "md5") == 0) {
+      alg = false;
       def -> hash_alg[0] = true;
     } else if (strcmp (tok, "sha1") == 0) {
+      alg = false;
       def -> hash_alg[1] = true;
     } else if (strcmp (tok, "sha256") == 0) {
+      alg = false;
       def -> hash_alg[2] = true;
     } else {
-      return -1;
+      return ERROR_ALG;
     }
 
     tok = strtok (NULL, ",");
   }
   
-  return 0;
+  if (alg)
+    return ERROR_ALG;
+  
+  return SUCCESS;
 }
 
 int defStruct_out (defStruct *def, char *file) {
   if (def == NULL || file == NULL)
-    return -1;
+    return ERROR_FILES;
 
   def -> file_out = (char *)malloc (sizeof(char) * strlen (file));
   if (!def -> file_out)
-    return -1;
+    return ERROR_ALLOC;
 
   strcpy (def -> file_out, file); // Check
 
-  return 0;
+  return SUCCESS;
 }
 
 int defStruct_target (defStruct *def, char *target) {
   if (def == NULL || target == NULL) 
-    return -1;
+    return ERROR_FILES;
   
   def -> target = (char *)malloc (sizeof(char) * strlen (target));
   if (!def -> target)
-    return -1;
+    return ERROR_ALLOC;
   
   strcpy (def -> target, target);
   
-  return 0;
+  return SUCCESS;
 }
 
 void delete_defStruct(defStruct *def){
@@ -100,7 +110,6 @@ void _print_struct(defStruct *def) {
   printf ("R_FLAG: %d\n", def -> r_flag);
   
   printf ("H_FLAG: %d\n", def -> h_flag);
-  
   if (def -> hash_alg != NULL){
     for (int i = 0; i < 3; i++) {
       printf ("hash_alg[%d]: %d\n", i, def -> hash_alg[i]);
