@@ -1,13 +1,16 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>
 
 #include "defStruct.h"
 #include "parser_in.h"
+#include "common.h"
+#include "finder.h"
 
 void printUsage ();
 
-int main (int argc, char *agrv[], char *envp[]){
-  if (argc == 1){
+int main (int argc, char *agrv[]){
+  if (argc == 1) {
     printUsage (stdout);
 
     return -1;
@@ -15,11 +18,12 @@ int main (int argc, char *agrv[], char *envp[]){
 
   defStruct *def = new_defStruct();
   if (!def) {
-    fprintf (stderr, "2 Error allocating memory\n");
+    fprintf (stderr, "Error allocating memory\n");
     return -1;
   }
 
   int ret = 0;
+  
   ret = parse_input (argc, agrv, def);
   if (ret)
     printUsage (stderr);
@@ -32,11 +36,18 @@ int main (int argc, char *agrv[], char *envp[]){
       defStruct_log (def, file_log);
     } else {
       fprintf (stderr, "Environment variable not set, LOGFILENAME\n");
+      
+      delete_defStruct(def);
+      
       return -1;
     }
   }
 
   _print_struct (def);
+  
+  char str[512];
+  file_finder (def, str);
+  puts(str);
 
   delete_defStruct (def);
   

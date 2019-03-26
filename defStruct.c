@@ -10,7 +10,7 @@
 #define ERROR_FILES (-2)
 #define ERROR_ALG   (-3)
 
-defStruct* new_defStruct(){
+defStruct* new_defStruct (){
   defStruct* def;
 
   def = (defStruct*)malloc (sizeof (defStruct));
@@ -38,7 +38,7 @@ int defStruct_hash (defStruct *def, char *algs) {
     return ERROR_FILES;
 
   def -> hash_alg = (int *)calloc (3, sizeof(def -> hash_alg));
-  if(def -> hash_alg == NULL)
+  if (def -> hash_alg == NULL)
     return ERROR_ALLOC;
 
   char *tok;
@@ -72,7 +72,7 @@ int defStruct_out (defStruct *def, char *file) {
   if (def == NULL || file == NULL)
     return ERROR_FILES;
 
-  def -> file_out = (char *)malloc (sizeof(char) * strlen (file));
+  def -> file_out = (char *)malloc (sizeof (char) * strlen (file));
   if (!def -> file_out)
     return ERROR_ALLOC;
 
@@ -98,7 +98,7 @@ int defStruct_target (defStruct *def, char *target) {
   if (def == NULL || target == NULL) 
     return ERROR_FILES;
   
-  def -> target = (char *)malloc (sizeof(char) * strlen (target));
+  def -> target = (char *)malloc (sizeof (char) * strlen (target));
   if (!def -> target)
     return ERROR_ALLOC;
   
@@ -107,8 +107,8 @@ int defStruct_target (defStruct *def, char *target) {
   return SUCCESS;
 }
 
-void delete_defStruct(defStruct *def){
-  if(!def)
+void delete_defStruct (defStruct *def){
+  if (!def)
     return;
 
   free (def -> hash_alg);
@@ -119,7 +119,7 @@ void delete_defStruct(defStruct *def){
   free (def);
 }
 
-void _print_struct(defStruct *def) {
+void _print_struct (defStruct *def) {
   printf ("R_FLAG: %d\n", def -> r_flag);
   
   printf ("H_FLAG: %d\n", def -> h_flag);

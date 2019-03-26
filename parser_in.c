@@ -7,7 +7,7 @@
 
 int parse_input (int argc, char *argv[], defStruct* def);
 
-int _error_handler (int err);
+int _error_handler_parser (int err);
 
 int parse_input (int argc, char *argv[], defStruct* def) {
   int ret = 0;
@@ -23,7 +23,7 @@ int parse_input (int argc, char *argv[], defStruct* def) {
         def -> h_flag = true;
         ret = defStruct_hash (def, argv[i+1]);            // After -h must come the hash algorithms                                                       
                                                           // Which are in the next string  
-        if (_error_handler(ret))
+        if (_error_handler_parser (ret))
           return -1;
         break;
       
@@ -31,7 +31,7 @@ int parse_input (int argc, char *argv[], defStruct* def) {
         def -> o_flag = true;
         ret = defStruct_out (def, argv[i+1]);
 
-        if (_error_handler(ret))
+        if (_error_handler_parser (ret))
           return -1;
         break;
       
@@ -47,13 +47,13 @@ int parse_input (int argc, char *argv[], defStruct* def) {
 
   ret = defStruct_target (def, argv[argc-1]);
   
-  if (_error_handler(ret))
+  if (_error_handler_parser(ret))
     return -1;
 
   return 0;
 }
 
-int _error_handler (int err) {
+int _error_handler_parser (int err) {
   switch (err) {
   case -1:
       fprintf (stderr, "1 Error allocating memory\n");
