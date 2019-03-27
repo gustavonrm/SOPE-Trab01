@@ -17,8 +17,9 @@ int _get_hashSum (char *file, int alg, char *str);
 void _format_time (time_t time, char *str, int size_str);
 
 int file_finder (defStruct *def, char *str) {
+  
   wrt_to_str (str, def -> target);
-
+  
   char type[256];
   int ret;
 
@@ -27,7 +28,7 @@ int file_finder (defStruct *def, char *str) {
     _error_handler_finder (ret);
     return -1;
   }
-
+  
   wrt_to_str (str, type);
 
   char size[5], mode[4], aTime[20], mTime[20];
@@ -37,21 +38,23 @@ int file_finder (defStruct *def, char *str) {
     _error_handler_finder (ret);
     return -1;
   }
-    
+  
   wrt_to_str (str, size);
   wrt_to_str (str, mode);
   wrt_to_str (str, aTime);
   wrt_to_str (str, mTime);
-
-  for (int i = 0; i < 3; i++) {
-    if (def -> hash_alg[i]){
-      char alg[256];
-      ret = _get_hashSum (def ->target, i, alg);
-      if(ret != 0) {
-        _error_handler_finder (ret);
-        return -1;
+  
+  if (def ->h_flag){ // This is ugly maybe remake?
+    for (int i = 0; i < 3; i++) {
+      if (def -> hash_alg[i]){
+        char alg[256];
+        ret = _get_hashSum (def ->target, i, alg);
+        if(ret != 0) {
+          _error_handler_finder (ret);
+          return -1;
+        }
+        wrt_to_str (str, alg);
       }
-      wrt_to_str (str, alg);
     }
   }
   return 0;
@@ -92,7 +95,7 @@ void _error_handler_finder (int err) {
 
 int _get_type (char *file, char *type) {
   int ret;
-  
+
   ret = my_execlp ("file", file, type);
 
   return ret;
