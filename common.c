@@ -63,3 +63,10 @@ void wrt_to_str (char *str, char *txt) {
  strcat (str, txt);
  strcat (str, ",");
 }
+
+void wrt_to_file (char *file, char *str, int size) {
+  FILE *fp;
+
+  fp = fopen (file, "w");
+  fwrite (str, sizeof(char), size, fp);
+}

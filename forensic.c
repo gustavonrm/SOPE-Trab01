@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <string.h>
 
 #include "defStruct.h"
 #include "parser_in.h"
@@ -47,7 +48,13 @@ int main (int argc, char *agrv[]){
   
   char str[512];
   file_finder (def, str);
-  puts(str);
+  
+
+  if (def -> o_flag) {
+    wrt_to_file (def -> file_out, str, strlen(str));
+  } else {
+    printf ("%s\n", str);
+  }
 
   delete_defStruct (def);
   
