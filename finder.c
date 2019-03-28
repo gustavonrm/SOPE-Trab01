@@ -1,14 +1,14 @@
 #include <stdio.h>
 #include <time.h>
 #include <string.h>
+#include <stdlib.h>
 
 #include <sys/types.h>
 #include <sys/stat.h>
 
 #include "defStruct.h"
 #include "common.h"
-
-void _error_handler_finder (int err);
+#include "finder.h"
 
 int _get_type (char *file, char *type);
 int _get_stat (char *file, char *size, char *mode, char *aTime, char *mTime);
@@ -24,20 +24,16 @@ int file_finder (defStruct *def, char *str) {
   int ret;
 
   ret = _get_type (def -> target, type);
-  if (ret != 0) {
-    _error_handler_finder (ret);
-    return -1;
-  }
+  if (ret)
+    my_exit (ret, "Error getting type");
   
   wrt_to_str (str, type);
 
   char size[5], mode[4], aTime[20], mTime[20];
 
   ret = _get_stat (def->target, size, mode, aTime, mTime);
-  if (ret !=0) {
-    _error_handler_finder (ret);
-    return -1;
-  }
+  if (ret)
+    my_exit (ret, "Error creating stat struct");
   
   wrt_to_str (str, size);
   wrt_to_str (str, mode);
@@ -49,48 +45,14 @@ int file_finder (defStruct *def, char *str) {
       if (def -> hash_alg[i]){
         char alg[256];
         ret = _get_hashSum (def ->target, i, alg);
-        if(ret != 0) {
-          _error_handler_finder (ret);
-          return -1;
-        }
+        if (ret)
+          my_exit (ret, "Error calculating cryptographic sums");
+
         wrt_to_str (str, alg);
       }
     }
   }
   return 0;
-}
-
-void _error_handler_finder (int err) {
-  switch (err) {
-  case 0:
-    return;
-    break;
-  
-  case -1:
-    fprintf (stderr, "Error files cant be null\n");
-    return;
-    break;
-
-  case -2:
-    fprintf (stderr, "Error creating a pipe\n");
-    return;
-    break;
-  
-  case -3:
-    fprintf (stderr, "Error creating a new process\n");
-    return;
-    break;
-
-  case -4:
-    fprintf (stderr, "Error getting the stat struct\n");
-    return;
-    break;
-  
-  case -5:
-    fprintf (stderr, "Error calculating cryptographic sums \n");
-    return;
-    break;
-  }
 }
 
 int _get_type (char *file, char *type) {
@@ -107,7 +69,7 @@ int _get_stat (char *file, char *size, char *mode, char *aTime, char *mTime) {
 
   ret = stat (file, &buf);
   if(ret != 0)
-    return -4;
+    return -1;
 
   sprintf (size, "%ld", buf.st_size);
   _get_mode (buf.st_mode, mode);
@@ -138,7 +100,7 @@ int _get_hashSum (char *file, int alg, char *str) {
     break;
   
   default:
-    return -5;
+    return -1;
     break;
   }
 }

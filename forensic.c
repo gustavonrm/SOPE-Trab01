@@ -14,7 +14,7 @@ int main (int argc, char *agrv[]){
   if (argc == 1) {
     printUsage (stdout);
 
-    return -1;
+    return 0;
   }
 
   defStruct *def = new_defStruct();
@@ -48,7 +48,6 @@ int main (int argc, char *agrv[]){
   
   char str[512];
   file_finder (def, str);
-  
 
   if (def -> o_flag) {
     wrt_to_file (def -> file_out, str, strlen(str));
