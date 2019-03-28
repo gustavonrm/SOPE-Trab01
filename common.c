@@ -70,3 +70,15 @@ void wrt_to_file (char *file, char *str, int size) {
   fp = fopen (file, "w");
   fwrite (str, sizeof(char), size, fp);
 }
+
+void file_read(defStruct *def,char *str){
+    
+    if (def->o_flag)
+    {
+      wrt_to_file(def->file_out, str, strlen(str));
+    }
+    else
+    {
+      printf("%s\n", str);
+    }
+}
