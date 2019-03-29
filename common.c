@@ -56,7 +56,7 @@ void wrt_to_str (char *str, char *txt) {
 void wrt_to_file (char *file, char *str, int size) {
   FILE *fp;
 
-  fp = fopen (file, "r+");
+  fp = fopen (file, "w");
   fwrite (str, sizeof(char), size, fp);
 }
 
@@ -85,8 +85,7 @@ int is_directory (char *filename) {
   return S_ISDIR (st.st_mode);
 }
 
-void chopN(char *str, size_t n)
-{
+void chopN(char *str, size_t n) {
     assert(n != 0 && str != 0);
     size_t len = strlen(str);
     if (n > len)
