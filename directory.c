@@ -11,12 +11,8 @@ int dir_read(defStruct *def)
     char main_folder[size];
     strcpy(main_folder, def->target);
     char str[512];
-    char *lines[10];
+    char *lines[16];
     int ln = 0;
-
-    {
-        /* data */
-    };
 
     //open dir
     if ((dir = opendir(def->target)) == NULL)
@@ -27,38 +23,42 @@ int dir_read(defStruct *def)
     //output files
     while ((dentry = readdir(dir)) != NULL)
     {
-        //ignore dots
-        char pathname[512] = {};
-        sprintf(pathname, "%s/%s", main_folder, dentry->d_name);
-        //printf("%s\n", pathname);
-        if (lstat(pathname, &stat_entry) == -1)
+        if (ignore_dot(dentry->d_name) == 0)
         {
-            perror("lstat ERROR");
-            return 10;
-        }
-        if (S_ISDIR(stat_entry.st_mode))
-        {
-            //TODO fork()
-            //printf("dir: %s\n", dentry->d_name);
-        }
-        else if (S_ISREG(stat_entry.st_mode))
-        {
-            //printf("file: %s\n", dentry->d_name);
-            //READ
-            defStruct *sample = new_defStruct();
-            rearange_def(def, sample, pathname);
-            strcpy(str, "");
-            file_finder(sample, str);
-            chopN(str, size + 1);
-            file_write(sample,str);
-            lines[ln] = str;
-            ln++;
-            //bug tests
-            //printf("i:%d\n", i);
-            //i++;
+            char pathname[512] = {};
+            sprintf(pathname, "%s/%s", main_folder, dentry->d_name);
+            //printf("%s\n", pathname);
+            if (lstat(pathname, &stat_entry) == -1)
+            {
+                perror("lstat ERROR");
+                return 10;
+            }
+            if (S_ISDIR(stat_entry.st_mode))
+            {
+                //TODO fork()
+                //printf("dir: %s\n", dentry->d_name);
+            }
+            else if (S_ISREG(stat_entry.st_mode))
+            {
+                //printf("file: %s\n", dentry->d_name);
+                //READ
+                defStruct *sample = new_defStruct();
+                rearange_def(def, sample, pathname);
+                strcpy(str, "");
+                file_finder(sample, str);
+                chopN(str, size + 1);
+                //file_write(sample,str);
+                //printf("%s\n",str);
+                lines[ln] = malloc(strlen(str) + 1);
+                strcpy(lines[ln], str);
+                ln++;
+                //bug tests
+                //printf("i:%d\n", i);
+                //i++;
+            }
         }
     }
-    //dir_write(lines, def);
+    dir_write(lines, def);
     closedir(dir);
     return 0;
 }
@@ -90,8 +90,15 @@ void rearange_def(defStruct *old, defStruct *new, char *file_name)
 int dir_write(char **str, defStruct *def)
 {
     int file;
+    int li = 0; 
     int i=0; 
 
+    //count lines
+    while (strchr(str[li],',')){
+        li++;
+    }
+    
+    //subtract 1 bc of trash 
     if (def->o_flag)
     {
         file = open(def->file_out, O_WRONLY | O_CREAT | O_EXCL | O_TRUNC, 0644);
@@ -100,18 +107,22 @@ int dir_write(char **str, defStruct *def)
             perror(def->file_out);
             return ERROR_FILE_DIR;
         }
-        
-        while(strlen(str[i])!= 0){
-            write(file,str[i],strlen(str[i]));
+
+        while (i<li)
+        {
+            write(file,str[i], strlen(str[i]));
+            write(file,"\n",1);
             i++;
         }
-        return 0; 
-    }else
+        return 0;
+    }
+    else
     {
-        while(strlen(str[i])!= 0){
-             printf("%s\n", str[i]);
-             i++;
+        while (i<li)
+        {
+            printf("%s\n", str[i]);
+            i++;
         }
-        return 0; 
-    }   
+        return 0;
+    }
 }
