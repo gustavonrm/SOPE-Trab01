@@ -58,8 +58,6 @@ void wrt_to_file (char *file, char *str, int size) {
 
   fp = fopen (file, "r+");
   fwrite (str, sizeof(char), size, fp);
-  printf("%s\n",str);
-
 }
 
 void file_write(defStruct *def,char *str){

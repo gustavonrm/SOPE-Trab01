@@ -42,7 +42,7 @@ int file_finder(defStruct *def, char *str)
   wrt_to_str(str, mTime);
 
   if (def->h_flag)
-  { // This is ugly maybe remake?
+  { 
     for (int i = 0; i < 3; i++)
     {
       if (def->hash_alg[i])
@@ -56,6 +56,7 @@ int file_finder(defStruct *def, char *str)
       }
     }
   }
+
   return 0;
 }
 
@@ -94,6 +95,7 @@ int _get_stat(char *file, char *size, char *mode, char *aTime, char *mTime)
     if (ret != 0)
       return -1;
   }
+
   sprintf(size, "%ld", buf.st_size);
   _get_mode(buf.st_mode, mode);
   _format_time(buf.st_atime, aTime, 20);

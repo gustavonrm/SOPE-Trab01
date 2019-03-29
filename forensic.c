@@ -56,7 +56,7 @@ int main(int argc, char *agrv[])
   }
 
   //TEST
-  //_print_struct(def);
+  
 
   //directories
   if (is_directory(def->target)==1) 
