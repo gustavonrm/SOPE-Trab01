@@ -4,7 +4,7 @@
 
 #include "defStruct.h"
 
-defStruct* new_defStruct (){
+defStruct* new_defStruct () {
   defStruct* def;
 
   def = (defStruct*)malloc (sizeof (defStruct));

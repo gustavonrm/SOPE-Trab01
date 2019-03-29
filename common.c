@@ -62,19 +62,16 @@ void wrt_to_file (char *file, char *str, int size) {
 
 void file_write(defStruct *def,char *str){
     
-    if (def->o_flag)
-    {
-      wrt_to_file(def->file_out, str, strlen(str));
-    }
-    else
-    {
-      printf("%s\n", str);
+    if (def->o_flag) {
+      wrt_to_file (def->file_out, str, strlen (str));
+    } else {
+      printf ("%s\n", str);
     }
 }
 
 void my_exit (int err, char *str) {
   fprintf (stderr, "%s\n", str);
-  exit(err);
+  exit (err);
 }
 
 int is_directory (char *filename) {
@@ -86,10 +83,10 @@ int is_directory (char *filename) {
 }
 
 void chopN(char *str, size_t n) {
-    assert(n != 0 && str != 0);
-    size_t len = strlen(str);
+    assert (n != 0 && str != 0);
+    size_t len = strlen (str);
     if (n > len)
         return;  // Or: n = len;
-    memmove(str, str+n, len - n + 1);
+    memmove (str, str+n, len - n + 1);
 }
 

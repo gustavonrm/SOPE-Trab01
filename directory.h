@@ -19,10 +19,10 @@
 
 int dir_read (defStruct *def);
 //ultils
-int ignore_dot(char *filename); 
+int ignore_dot (char *filename); 
 
-void rearange_def(defStruct *old, defStruct *new,char *file_name); 
+void rearange_def (defStruct *old, defStruct *new,char *file_name); 
 
-int dir_write(char **str, defStruct *def);
+int dir_write (char **str, defStruct *def);
 
 #endif
