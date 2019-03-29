@@ -1,21 +1,10 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <string.h>
-
-#include <sys/wait.h>
-
 #include "common.h"
-
-#define ERROR_FILES -1
-#define ERROR_PIPE  -2
-#define ERROR_FORK  -3
 
 #define BUF_SIZE 256
 
 int my_execlp (char *cmd, char *filename, char *ret) {
   if (cmd == NULL || filename == NULL)
-    return ERROR_FILES;
+    my_exit (ERROR_FILES, "Error opening files");
   
   int link[2];
   pid_t pid;
@@ -25,7 +14,7 @@ int my_execlp (char *cmd, char *filename, char *ret) {
   int aux = 0;
 
   if (pipe (link) == -1) 
-    return ERROR_PIPE;
+    my_exit (ERROR_PIPE, "Error creating pipe");
   
   if (strcmp ("file", cmd) == 0){
     aux = 1;
@@ -34,7 +23,7 @@ int my_execlp (char *cmd, char *filename, char *ret) {
 
   pid = fork ();
   if (pid == -1)
-    return ERROR_FORK;
+    my_exit (ERROR_FORK, "Error creating fork");
 
   if (pid == 0) {   // Child
     dup2 (link[1], STDOUT_FILENO);
@@ -67,11 +56,13 @@ void wrt_to_str (char *str, char *txt) {
 void wrt_to_file (char *file, char *str, int size) {
   FILE *fp;
 
-  fp = fopen (file, "w");
+  fp = fopen (file, "r+");
   fwrite (str, sizeof(char), size, fp);
+  printf("%s\n",str);
+
 }
 
-void file_read(defStruct *def,char *str){
+void file_write(defStruct *def,char *str){
     
     if (def->o_flag)
     {
@@ -82,3 +73,26 @@ void file_read(defStruct *def,char *str){
       printf("%s\n", str);
     }
 }
+
+void my_exit (int err, char *str) {
+  fprintf (stderr, "%s\n", str);
+  exit(err);
+}
+
+int is_directory (char *filename) {
+  struct stat st;
+
+  stat (filename, &st);
+
+  return S_ISDIR (st.st_mode);
+}
+
+void chopN(char *str, size_t n)
+{
+    assert(n != 0 && str != 0);
+    size_t len = strlen(str);
+    if (n > len)
+        return;  // Or: n = len;
+    memmove(str, str+n, len - n + 1);
+}
+

@@ -4,12 +4,6 @@
 
 #include "defStruct.h"
 
-#define SUCCESS     (0)
-#define ERROR_NULL  (NULL)
-#define ERROR_ALLOC (-1)
-#define ERROR_FILES (-2)
-#define ERROR_ALG   (-3)
-
 defStruct* new_defStruct (){
   defStruct* def;
 

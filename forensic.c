@@ -18,7 +18,7 @@ int main(int argc, char *agrv[])
   {
     printUsage(stdout);
 
-    return -1;
+    return 0;
   }
 
   //BUILDING STRUCT
@@ -55,19 +55,19 @@ int main(int argc, char *agrv[])
     }
   }
 
+  //TEST
   //_print_struct(def);
 
-  char str[512];
-  file_finder(def, str);
-
   //directories
-  if (strchr(def->target, '.') == NULL)
+  if (is_directory(def->target)==1) 
   {
     dir_read(def);
   }
   else //single files
-  {
-    file_read(def,str);
+  { 
+    char str[512];
+    file_finder(def, str);
+    file_write(def,str);
   }
 
   //EXITING

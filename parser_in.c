@@ -4,6 +4,7 @@
 
 #include "defStruct.h"
 #include "parser_in.h"
+#include "common.h"
 
 int parse_input (int argc, char *argv[], defStruct* def);
 
@@ -23,16 +24,18 @@ int parse_input (int argc, char *argv[], defStruct* def) {
         def -> h_flag = true;
         ret = defStruct_hash (def, argv[i+1]);            // After -h must come the hash algorithms                                                       
                                                           // Which are in the next string  
-        if (_error_handler_parser (ret))
-          return -1;
+        if(ret)
+          my_exit(ret, "Error input cryptographic algorithms");
+
         break;
       
       case 'o':
         def -> o_flag = true;
         ret = defStruct_out (def, argv[i+1]);
 
-        if (_error_handler_parser (ret))
-          return -1;
+        if (ret)
+          my_exit (ret, "Error allocating memory, output");
+
         break;
       
       case 'v':
@@ -47,35 +50,11 @@ int parse_input (int argc, char *argv[], defStruct* def) {
 
   ret = defStruct_target (def, argv[argc-1]);
   
-  if (_error_handler_parser(ret))
-    return -1;
+  if (ret)
+    my_exit (ret, "Error allocating memory, target");
+
+  if (!def -> r_flag && is_directory(def -> target))
+    my_exit (ERROR_NFILE, "Input is not a valid file");
 
   return 0;
-}
-
-int _error_handler_parser (int err) {
-  switch (err) {
-  case -1:
-      fprintf (stderr, "1 Error allocating memory\n");
-      return -1;
-      break;
-  
-  case -2:
-    fprintf (stderr, "Error missing files\n");
-    return -1;
-    break;
-  
-  case -3:
-    fprintf (stderr, "Error on the cryptographic hash algorithms\n");
-    return -1;
-    break;
-
-  case 0:
-    return 0;
-    break;
-  
-  default:
-    return -1;
-    break;
-  }
 }

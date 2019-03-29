@@ -1,6 +1,12 @@
 #ifndef _DEFSTRUCT_H
 #define _DEFSTRUCT_H
 
+#define SUCCESS     0
+#define ERROR_NULL  NULL
+#define ERROR_ALLOC 5
+#define ERROR_FILES 1
+#define ERROR_ALG   4
+
 typedef enum {false, true} bool; 
 
 typedef struct {
