@@ -88,15 +88,6 @@ int is_directory (char *filename) {
   return S_ISDIR (st.st_mode);
 }
 
-void chopN(char *str, size_t n) {
-  assert (n != 0 && str != 0);
-  size_t len = strlen (str);
-  if (n > len)
-    return;  // Or: n = len;
-  
-  memmove (str, str+n, len - n + 1);
-}
-
 void _wrt_to_file (char *file, char *str, int size) {
   fwrite (str, sizeof(char), size, fp);
   fwrite ("\n", sizeof(char), 1, fp);

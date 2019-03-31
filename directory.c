@@ -2,6 +2,7 @@
 
 int _ignore_dot (char *filename);
 void _rearange_def (defStruct *old, defStruct *new,char *file_name); 
+void _chopN(char *str, size_t n);
 
 int dir_read (defStruct *def) {
     //bugs
@@ -41,7 +42,8 @@ int dir_read (defStruct *def) {
           
           strcpy (str, "");
           file_finder (sample, str);
-          
+          _chopN (str, size +1);
+
           file_write (sample -> o_flag, sample -> file_log, str);
         }
       }
@@ -72,4 +74,13 @@ void _rearange_def (defStruct *old, defStruct *new, char *file_name) {
   defStruct_log (new, old -> file_log);
 
   defStruct_target (new, file_name);
+}
+
+void _chopN(char *str, size_t n) {
+  assert (n != 0 && str != 0);
+  size_t len = strlen (str);
+  if (n > len)
+    return;  // Or: n = len;
+  
+  memmove (str, str+n, len - n + 1);
 }

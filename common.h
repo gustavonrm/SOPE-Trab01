@@ -30,7 +30,4 @@ void my_exit (int err, char *str);
 
 int is_directory (char *filename);
 
-//https://stackoverflow.com/questions/4761764/how-to-remove-first-three-characters-from-string-with-c
-void chopN (char *str, size_t n);
-
 #endif
