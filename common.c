@@ -2,6 +2,20 @@
 
 #define BUF_SIZE 256
 
+FILE *fp = NULL;
+
+void _wrt_to_file (char *file, char *str, int size);
+
+void openFile (char *filename) {
+  fp = fopen (filename, "wa");
+  if (!fp)
+    my_exit (ERROR_FILES, "Error opening file");
+}
+
+void closeFile() {
+  fclose(fp);
+}
+
 int my_execlp (char *cmd, char *filename, char *ret) {
   if (cmd == NULL || filename == NULL)
     my_exit (ERROR_FILES, "Error opening files");
@@ -10,7 +24,7 @@ int my_execlp (char *cmd, char *filename, char *ret) {
   pid_t pid;
   char buf[BUF_SIZE +1];
 
-  char delim[] = " ";
+  char delim[2] = " ";
   int aux = 0;
 
   if (pipe (link) == -1) 
@@ -32,17 +46,17 @@ int my_execlp (char *cmd, char *filename, char *ret) {
     if (aux) {
       execlp (cmd, cmd, "-b", filename, NULL);  // Now writes to link[1]
     } else {
-      execlp (cmd, cmd, filename, NULL);  // Now writes to link[1]
+      execlp (cmd, cmd, filename, NULL);        // Now writes to link[1]
     }
   } else {          // Parent
     close (link[1]);
 
     read (link[0], buf, BUF_SIZE);
 
-    waitpid (pid, NULL, 0);     // Verificar opcoes
+    waitpid (pid, NULL, 0);
   }
   
-  buf[strcspn (buf, delim)] = '\0';
+  buf[strcspn (buf, delim)] = '\0';            //Deletes \n at the end
   strcpy (ret, buf);
   
   return 0;
@@ -53,20 +67,12 @@ void wrt_to_str (char *str, char *txt) {
  strcat (str, ",");
 }
 
-void wrt_to_file (char *file, char *str, int size) {
-  FILE *fp;
-
-  fp = fopen (file, "w");
-  fwrite (str, sizeof(char), size, fp);
-}
-
-void file_write(defStruct *def,char *str){
-    
-    if (def->o_flag) {
-      wrt_to_file (def->file_out, str, strlen (str));
-    } else {
-      printf ("%s\n", str);
-    }
+void file_write(int o_flag, char *filename, char *str){
+  if (o_flag) {
+    _wrt_to_file (filename, str, strlen (str));
+  } else {
+    printf ("%s\n", str);
+  }
 }
 
 void my_exit (int err, char *str) {
@@ -83,10 +89,16 @@ int is_directory (char *filename) {
 }
 
 void chopN(char *str, size_t n) {
-    assert (n != 0 && str != 0);
-    size_t len = strlen (str);
-    if (n > len)
-        return;  // Or: n = len;
-    memmove (str, str+n, len - n + 1);
+  assert (n != 0 && str != 0);
+  size_t len = strlen (str);
+  if (n > len)
+    return;  // Or: n = len;
+  
+  memmove (str, str+n, len - n + 1);
+}
+
+void _wrt_to_file (char *file, char *str, int size) {
+  fwrite (str, sizeof(char), size, fp);
+  fwrite ("\n", sizeof(char), 1, fp);
 }
 

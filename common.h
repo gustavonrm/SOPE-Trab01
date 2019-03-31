@@ -12,19 +12,19 @@
 #include <sys/stat.h>
 #include <sys/stat.h>
 
-#include "defStruct.h"
-
 #define ERROR_FILES 1
 #define ERROR_PIPE  2
 #define ERROR_FORK  3
+
+void openFile (char *filename);
+
+void closeFile();
 
 int my_execlp (char *cmd, char *filename, char *ret);
 
 void wrt_to_str (char *str, char *txt);
 
-void wrt_to_file (char *file, char *txt, int size);
-
-void file_write (defStruct *def,char *str);
+void file_write (int o_flag, char *filename, char *str);
 
 void my_exit (int err, char *str);
 

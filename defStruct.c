@@ -70,7 +70,7 @@ int defStruct_out (defStruct *def, char *file) {
   if (!def -> file_out)
     return ERROR_ALLOC;
 
-  strcpy (def -> file_out, file); // Check
+  strcpy (def -> file_out, file);
 
   return SUCCESS;
 }
@@ -80,10 +80,10 @@ int defStruct_log (defStruct *def, char *file) {
     return ERROR_FILES;
 
   def -> file_log = (char *)malloc (sizeof (char) * strlen (file));
-  if (!def ->file_log)
+  if (!def -> file_log)
     return ERROR_ALLOC;
 
-  strcpy (def ->file_log, file);
+  strcpy (def -> file_log, file);
 
   return SUCCESS;
 }

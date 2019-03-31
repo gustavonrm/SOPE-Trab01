@@ -12,13 +12,13 @@
 void printUsage ();
 
 int main (int argc, char *agrv[]) {
-  //ARGUMENT CHECK
+  // Argument check
   if (argc == 1) {
     printUsage (stdout);
     return 0;
   }
 
-  //BUILDING STRUCT
+  // Building struct
   defStruct *def = new_defStruct ();
   if (!def) {
     fprintf (stderr, "Error allocating memory\n");
@@ -31,7 +31,7 @@ int main (int argc, char *agrv[]) {
   if (ret)
     printUsage (stderr);
 
-  //FILE PROCESSING
+  // Log file processing
   if (def->v_flag) {
     char *file_log;
     file_log = getenv ("LOGFILENAME");
@@ -47,19 +47,22 @@ int main (int argc, char *agrv[]) {
     }
   }
 
-  //TEST
-  
+  if (def -> o_flag)
+    openFile (def -> file_out);
 
-  //directories
+  // Directory
   if (def->r_flag) {
     dir_read (def);
-  } else { //single files  
+  } else { // Single file  
     char str[512];
     file_finder (def, str);
-    file_write (def,str);
+    file_write (def -> o_flag, def -> file_out,str);
   }
 
-  //EXITING
+  // Exiting
+  if (def -> o_flag)
+    closeFile ();
+    
   delete_defStruct (def);
 
   return 0;

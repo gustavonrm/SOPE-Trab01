@@ -43,6 +43,7 @@ int defStruct_target (defStruct *def, char *target);
 
 void delete_defStruct (defStruct *def);
 
+//DEBUG
 void _print_struct (defStruct *def);
 
 #endif
