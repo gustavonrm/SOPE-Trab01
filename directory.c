@@ -31,6 +31,8 @@ int dir_read(defStruct *def)
   // Output files
   while ((dentry = readdir(dir)) != NULL)
   {
+    //to test signal - sleep should be removes
+    //sleep(1);
     if (_ignore_dot(dentry->d_name))
     {
       char pathname[512] = {};
@@ -50,9 +52,10 @@ int dir_read(defStruct *def)
         strcpy(str, "");
         file_finder(sample, str);
 
+
         _chopN(str, strlen(higherName) + 1);
 
-        file_write(sample->o_flag, sample->file_log, str);
+        file_write(sample->o_flag, sample->file_log, str,def->higher_pid);
       }
       else if (S_ISDIR(stat_entry.st_mode))
       {
@@ -61,16 +64,17 @@ int dir_read(defStruct *def)
           my_exit(-1, "error creating new struct");
         _rearange_def(def, sample, pathname);
 
+        if(def->o_flag)
+          kill(def->higher_pid,SIGUSR1);
+
         pid = fork();
         if (pid == 0)
         {
           dir_read(sample);
-          //return 0;
+          return 0;
         }
-        else
-        {
+        else{
           wait(&status);
-          exit(0); //parent does nothing
         }
       }
     }

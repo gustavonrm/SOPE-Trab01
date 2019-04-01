@@ -21,6 +21,8 @@ typedef struct {
   int v_flag; 
   char *file_log;
 
+  pid_t higher_pid; 
+
   char *target;
 } defStruct;
 

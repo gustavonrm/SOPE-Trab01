@@ -24,7 +24,7 @@ int my_execlp (char *cmd, char *filename, char *ret);
 
 void wrt_to_str (char *str, char *txt);
 
-void file_write (int o_flag, char *filename, char *str);
+void file_write (int o_flag, char *filename, char *str,pid_t pid);
 
 void my_exit (int err, char *str);
 
