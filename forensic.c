@@ -52,6 +52,7 @@ int main (int argc, char *agrv[]) {
 
   // Directory
   if (def->r_flag) {
+    dir_highName(def);
     dir_read (def);
   } else { // Single file  
     char str[512];
