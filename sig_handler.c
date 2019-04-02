@@ -10,8 +10,8 @@ void sigint_handler (int signo)
 }
 
 //define global file coount values
-int n=0; //directories 
-int m=0; //files
+static int n=0; //directories 
+static int m=0; //files
 
 void sigusr1_handler (int signo){
     n++;
@@ -20,5 +20,5 @@ void sigusr1_handler (int signo){
 
 void sigusr2_handler (int signo){
     m++;
-    printf ("New directory: %d/%d directories/files at this time.\n",n,m); 
+    //printf ("New directory: %d/%d directories/files at this time.\n",n,m); 
 }

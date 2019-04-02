@@ -66,8 +66,8 @@ void wrt_to_str (char *str, char *txt) {
 
 void file_write (int o_flag, char *str, pid_t pid) {
   if (o_flag) {
-    kill (pid, SIGUSR2);
     _wrt_to_file (str, strlen(str));
+     kill (pid, SIGUSR2);
   } else {
     printf ("%s\n", str);
   }

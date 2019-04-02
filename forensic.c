@@ -91,9 +91,11 @@ int main (int argc, char *agrv[]) {
   }
 
   // Exiting
-  if (def->o_flag)
+  if (def->o_flag){
     closeFile();
-
+    printf("Data saved on file %s\nExecution saved on file...\n",def->file_out);
+  }
+  
   delete_defStruct (def);
 
   return 0;

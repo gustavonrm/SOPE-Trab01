@@ -14,7 +14,6 @@ int dir_read (defStruct *def) {
   
   //subfolders
   pid_t pid;
-  int status;
 
   char str[512];
 
@@ -62,11 +61,8 @@ int dir_read (defStruct *def) {
         pid = fork ();
         if (pid == 0) {
           dir_read (sample);
-          return 0;
-        } else {
-          wait (&status);
+          exit(0);
         }
-
         delete_defStruct (sample);
       }
     }
