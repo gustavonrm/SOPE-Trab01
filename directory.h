@@ -19,8 +19,6 @@
 #define ERROR_LSTAT 11
 #define ERROR_FILE_DIR 12
 
-
 int dir_read (defStruct *def);
-int dir_highName(defStruct *def);
 
 #endif

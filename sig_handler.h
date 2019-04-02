@@ -7,8 +7,8 @@
 #include <sys/types.h>
 #include <unistd.h> 
 
-void sigint_handler(int signo);
-void sigusr1_handler(int signo); 
-void sigusr2_handler(int signo);
+void sigint_handler (int signo);
+void sigusr1_handler (int signo); 
+void sigusr2_handler (int signo);
 
 #endif

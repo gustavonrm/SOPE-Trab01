@@ -1,6 +1,8 @@
 #ifndef _DEFSTRUCT_H
 #define _DEFSTRUCT_H
 
+#include <sys/types.h>
+
 #define SUCCESS     0
 #define ERROR_NULL  NULL
 #define ERROR_ALLOC 5
@@ -23,7 +25,9 @@ typedef struct {
 
   pid_t higher_pid; 
 
-  char *target;
+  char *path;
+  char *filename;
+
 } defStruct;
 
 
@@ -41,7 +45,9 @@ int defStruct_out (defStruct *def, char *file);
 
 int defStruct_log (defStruct *def, char *file);
 
-int defStruct_target (defStruct *def, char *target);
+int defStruct_path (defStruct *def, char *path);
+
+int defStruct_filename (defStruct *def, char *filename);
 
 void delete_defStruct (defStruct *def);
 

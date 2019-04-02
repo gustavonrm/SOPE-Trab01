@@ -17,13 +17,12 @@ int _get_hashSum (char *file, int alg, char *str);
 void _format_time (time_t time, char *str, int size_str);
 
 int file_finder (defStruct *def, char *str) {
-
-  wrt_to_str (str, def->target);
-
+  wrt_to_str (str, def -> filename);
+  
   char type[256];
   int ret;
 
-  ret = _get_type (def->target, type);
+  ret = _get_type (def -> path, type);
   if (ret)
     my_exit (ret, "Error getting type");
 
@@ -31,7 +30,7 @@ int file_finder (defStruct *def, char *str) {
 
   char size[5], mode[4], aTime[20], mTime[20];
 
-  ret = _get_stat (def->target, size, mode, aTime, mTime);
+  ret = _get_stat (def -> path, size, mode, aTime, mTime);
   if (ret)
     my_exit (ret, "Error creating stat struct");
 
@@ -44,7 +43,7 @@ int file_finder (defStruct *def, char *str) {
     for (int i = 0; i < 3; i++) {
       if (def->hash_alg[i]) {
         char alg[256];
-        ret = _get_hashSum (def->target, i, alg);
+        ret = _get_hashSum (def -> path, i, alg);
         if (ret)
           my_exit (ret, "Error calculating cryptographic sums");
 
@@ -58,7 +57,7 @@ int file_finder (defStruct *def, char *str) {
 
 int _get_type (char *file, char *type) {
   int ret;
-
+  
   //if patch from dir or file
   if (strchr (file, '/') == NULL)
     ret = my_execlp ("file", file, type);
@@ -71,7 +70,7 @@ int _get_type (char *file, char *type) {
 int _get_stat (char *file, char *size, char *mode, char *aTime, char *mTime) {
   struct stat buf;
   int ret;
-
+  
   //if patch from dir or file
   if (strchr (file, '/') == NULL) {
     ret = lstat (file, &buf);

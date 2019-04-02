@@ -53,6 +53,7 @@ Mkfile.old
 dkms.conf
 
 #Group add if needed
+.vscode/
 .testfolder/
 .testfolder2/
 .testfolder3/
