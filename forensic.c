@@ -32,7 +32,6 @@ int main (int argc, char *argv[]) {
 
   //to use on signals
   def->higher_pid = getpid ();
-  printf ("pid: %d\n",def->higher_pid);
 
   int ret = 0;
 

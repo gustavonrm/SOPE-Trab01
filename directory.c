@@ -27,7 +27,7 @@ int dir_read (defStruct *def) {
   // Output files
   while ((dentry = readdir (dir)) != NULL) {
     //to test signal - sleep should be removed
-    sleep(1);
+    //sleep(1);
     if (_ignore_dot(dentry->d_name)) {
       char pathname[512] = {};
       sprintf (pathname, "%s/%s", main_folder, dentry->d_name);
@@ -50,7 +50,8 @@ int dir_read (defStruct *def) {
 
         delete_defStruct (sample);
 
-      } else if (S_ISDIR (stat_entry.st_mode)) {
+      }
+      if (S_ISDIR (stat_entry.st_mode)) {
         defStruct *sample = new_defStruct ();
         if (!sample)
           my_exit(-1, "error creating new struct");
@@ -62,6 +63,14 @@ int dir_read (defStruct *def) {
 
         pid = fork ();
         if (pid == 0) {
+          //ignore all SIGINTS
+          struct sigaction action,orig_action; 
+          action.sa_handler = SIG_IGN;
+          sigemptyset(&action.sa_mask);
+          action.sa_flags=0; 
+
+          sigaction(SIGINT,&action,&orig_action); 
+
           if (v_flag) {
             char log[51];
             snprintf (log, 51, "Created process with pid %.8d (child-dir_read)", getpid());
@@ -69,6 +78,8 @@ int dir_read (defStruct *def) {
             wrt_log (log);
           }
           dir_read (sample);
+
+           sigaction(SIGINT,&orig_action,NULL); 
           exit(0);
         }
         delete_defStruct (sample);

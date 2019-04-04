@@ -48,8 +48,7 @@ void sigint_handler (int signo) {
   }
 
   //TODO: ver melhor o q é suposto ser feito aqui, mas esta a receber o sinal
-  printf ("\nSuccefully ended all processes!\n");
-  
+  printf ("\nSuccefully ended all processess!\n");
   if (execlp("pkill", "pkill", "forensic", NULL) != -1)
     perror("pkill");
 }
@@ -76,5 +75,5 @@ void sigusr2_handler (int signo){
     free (log);
   }
   m++;
-  //printf ("New directory: %d/%d directories/files at this time.\n",n,m); 
+  printf ("New directory: %d/%d directories/files at this time.\n",n,m); 
 }
