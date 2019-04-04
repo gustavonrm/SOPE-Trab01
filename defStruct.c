@@ -20,9 +20,6 @@ defStruct* new_defStruct () {
   def -> file_out = NULL;
   
   def -> v_flag = false;
-  def -> file_log = NULL;
-  
-  def -> file_log = NULL;
   
   def -> higher_pid = false;
 
@@ -79,19 +76,6 @@ int defStruct_out (defStruct *def, char *file) {
   return SUCCESS;
 }
 
-int defStruct_log (defStruct *def, char *file) {
-  if (def == NULL || file == NULL)
-    return ERROR_FILES;
-
-  def -> file_log = (char *)malloc (sizeof (char) * strlen (file));
-  if (!def -> file_log)
-    return ERROR_ALLOC;
-
-  strcpy (def -> file_log, file);
-
-  return SUCCESS;
-}
-
 int defStruct_target (defStruct *def, char *target) {
   if (def == NULL || target == NULL) 
     return ERROR_FILES;
@@ -111,7 +95,6 @@ void delete_defStruct (defStruct *def){
 
   free (def -> hash_alg);
   free (def -> file_out);
-  free (def -> file_log);
   free (def -> target);
 
   free (def);
@@ -132,8 +115,6 @@ void _print_struct (defStruct *def) {
     printf ("file out: %s\n", def -> file_out);
 
   printf ("V_FLAG: %d\n", def -> v_flag);
-  if (def -> file_log != NULL)
-    printf ("log file: %s\n", def -> file_log);
 
   if (def -> target != NULL)
     printf ("target: %s\n", def -> target);

@@ -14,6 +14,7 @@
 #include "defStruct.h"
 #include "common.h"
 #include "finder.h"
+#include "log_file.h"
 
 #define ERROR_OPEN 10
 #define ERROR_LSTAT 11

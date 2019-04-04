@@ -2,21 +2,19 @@
 
 #define BUF_SIZE 256
 
-FILE *fp = NULL;
-
-void _wrt_to_file (char *str, int size);
+FILE *out_desc = NULL;
 
 void openFile (char *filename) {
-  fp = fopen (filename, "wa");
-  if (!fp)
-    my_exit (ERROR_FILES, "Error opening file");
+  out_desc = fopen (filename, "wa");
+  if (!out_desc)
+    out_desc = stdout;
 }
 
 void closeFile () {
-  fclose (fp);
+  fclose (out_desc);
 }
 
-int my_execlp (char *cmd, char *filename, char *ret) {
+int my_execlp (char *cmd, char *filename, char *ret, int v_flag) {
   if (cmd == NULL || filename == NULL)
     my_exit (ERROR_FILES, "Error opening files");
 
@@ -40,6 +38,13 @@ int my_execlp (char *cmd, char *filename, char *ret) {
     my_exit (ERROR_FORK, "Error creating fork");
 
   if (pid == 0) { // Child
+    if (v_flag){
+      char log[52];
+      snprintf (log, 52, "Created process with pid %.8d (child-my_execlp)", getpid ());
+      sleep(1);
+      wrt_log (log);
+    }
+
     dup2 (link[1], STDOUT_FILENO);
     close (link[0]);
 
@@ -47,7 +52,15 @@ int my_execlp (char *cmd, char *filename, char *ret) {
       execlp (cmd, cmd, "-b", filename, NULL); // Now writes to link[1]
     else
       execlp (cmd, cmd, filename, NULL); // Now writes to link[1]
+
   } else { // Parent
+    if (v_flag){
+      char log[53];
+      snprintf (log, 53, "Created process with pid %.8d (parent-my_execlp)", pid);
+      sleep(1);
+      wrt_log (log);
+    }
+    
     close (link[1]);
     read (link[0], buf, BUF_SIZE);
     waitpid (pid, NULL, 0);
@@ -65,12 +78,11 @@ void wrt_to_str (char *str, char *txt) {
 }
 
 void file_write (int o_flag, char *str, pid_t pid) {
-  if (o_flag) {
-    _wrt_to_file (str, strlen(str));
-     kill (pid, SIGUSR2);
-  } else {
-    printf ("%s\n", str);
-  }
+  if (o_flag)
+    kill (pid, SIGUSR2);
+  
+  fprintf (out_desc, "%s\n", str);
+  fflush (out_desc);
 }
 
 void my_exit (int err, char *str) {
@@ -86,6 +98,7 @@ int is_directory (char *filename) {
   return S_ISDIR (st.st_mode);
 }
 void _wrt_to_file (char *str, int size) {
-  fwrite (str, sizeof(char), size, fp);
-  fwrite ("\n", sizeof(char), 1, fp);
+  fwrite (str, sizeof(char), size, out_desc);
+  fwrite ("\n", sizeof(char), 1, out_desc);
+  fflush (out_desc);
 }

@@ -13,6 +13,8 @@
 #include <sys/stat.h>
 #include <sys/stat.h>
 
+#include "log_file.h"
+
 #define ERROR_FILES 1
 #define ERROR_PIPE  2
 #define ERROR_FORK  3
@@ -21,7 +23,7 @@ void openFile (char *filename);
 
 void closeFile ();
 
-int my_execlp (char *cmd, char *filename, char *ret);
+int my_execlp (char *cmd, char *filename, char *ret, int v_flag);
 
 void wrt_to_str (char *str, char *txt);
 

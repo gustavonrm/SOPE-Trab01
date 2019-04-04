@@ -9,40 +9,19 @@
 #include "common.h"
 #include "finder.h"
 #include "directory.h"
+#include "log_file.h"
 #include "sig_handler.h"
 
 void printUsage ();
 
-int main (int argc, char *agrv[]) {
+int main (int argc, char *argv[]) {
   // Argument check
   if (argc == 1) {
     printUsage (stdout);
     return 0;
   }
 
-  //SIGINT INSTALL
-  struct sigaction action_int;
-  action_int.sa_handler = sigint_handler;
-  sigemptyset (&action_int.sa_mask);
-  action_int.sa_flags = 0;
-
-  sigaction (SIGINT, &action_int, NULL);
-
-  //SIGUSR1 INSTALL
-  struct sigaction action_usr1;
-  action_usr1.sa_handler = sigusr1_handler;
-  sigemptyset (&action_usr1.sa_mask);
-  action_usr1.sa_flags = 0;
-
-  sigaction (SIGUSR1, &action_usr1, NULL);
-
-  //SIGUSR2 INSTALL
-  struct sigaction action_usr2;
-  action_usr2.sa_handler = sigusr2_handler;
-  sigemptyset (&action_usr1.sa_mask);
-  action_usr2.sa_flags = 0;
-
-  sigaction (SIGUSR2, &action_usr2, NULL);
+  start_handlers ();
 
   // Building struct
   defStruct *def = new_defStruct ();
@@ -50,34 +29,35 @@ int main (int argc, char *agrv[]) {
     fprintf(stderr, "Error allocating memory\n");
     return -1;
   }
+
   //to use on signals
   def->higher_pid = getpid ();
   printf ("pid: %d\n",def->higher_pid);
 
   int ret = 0;
 
-  ret = parse_input (argc, agrv, def);
+  ret = parse_input (argc, argv, def);
   if (ret)
     printUsage (stderr);
 
+  setV_flag (def ->v_flag);
+
   // Log file processing
   if (def->v_flag) {
-    char *file_log;
-    file_log = getenv ("LOGFILENAME");
-
-    if (file_log != NULL) {
-      defStruct_log(def, file_log);
-    } else {
-      fprintf (stderr, "Environment variable not set, LOGFILENAME\n");
-
-      delete_defStruct (def);
-
-      return -1;
+    initLog ();
+    
+    char str[7 + argc * 7];
+    str[0] = '\0';
+    strcat (str, "COMMAND");
+    for (int i = 0; i < argc; i++) {
+      strcat (str, " ");
+      strcat (str, argv[i]);
     }
+    sleep(1);
+    wrt_log (str);
   }
 
-  if (def->o_flag)
-    openFile (def->file_out);
+  openFile (def->file_out);
 
   // Directory
   if (def->r_flag) {
@@ -86,6 +66,7 @@ int main (int argc, char *agrv[]) {
     dir_read (def);
   } else { // Single file
     char str[512];
+    str[0] = '\0';
     file_finder (def, str);
     file_write (def->o_flag, str,def->higher_pid);
   }
@@ -96,8 +77,12 @@ int main (int argc, char *agrv[]) {
     printf("Data saved on file %s\nExecution saved on file...\n",def->file_out);
   }
   
-  delete_defStruct (def);
+  if (def -> v_flag) {
+    closeLog();
+  }
 
+  delete_defStruct (def);
+  puts("Finish");
   return 0;
 }
 

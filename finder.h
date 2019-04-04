@@ -6,6 +6,7 @@
 #define ERROR_CRYPTO  7
 
 #include "defStruct.h"
+#include "log_file.h"
 
 int file_finder (defStruct *def, char *str);
 

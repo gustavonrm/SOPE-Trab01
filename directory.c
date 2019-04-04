@@ -4,10 +4,11 @@ int _ignore_dot (char *filename);
 void _rearange_def (defStruct *old, defStruct *new, char *filename);
 
 int dir_read (defStruct *def) {
-  DIR *dir;\
+  DIR *dir;
   struct dirent *dentry;
   struct stat stat_entry;
 
+  int v_flag = def -> v_flag;
   int size = strlen (def -> target);
   char main_folder[size];
   strcpy (main_folder, def -> target);
@@ -16,6 +17,7 @@ int dir_read (defStruct *def) {
   pid_t pid;
 
   char str[512];
+  str[0] = '\0';
 
   // Open dir
   dir = opendir (def -> target);
@@ -24,8 +26,8 @@ int dir_read (defStruct *def) {
 
   // Output files
   while ((dentry = readdir (dir)) != NULL) {
-    //to test signal - sleep should be removes
-    //sleep(1);
+    //to test signal - sleep should be removed
+    sleep(1);
     if (_ignore_dot(dentry->d_name)) {
       char pathname[512] = {};
       sprintf (pathname, "%s/%s", main_folder, dentry->d_name);
@@ -42,7 +44,7 @@ int dir_read (defStruct *def) {
         _rearange_def (def, sample, pathname);
       
         strcpy (str, "");
-        file_finder( sample, str);
+        file_finder (sample, str);
 
         file_write (sample->o_flag, str, def->higher_pid);
 
@@ -60,6 +62,12 @@ int dir_read (defStruct *def) {
 
         pid = fork ();
         if (pid == 0) {
+          if (v_flag) {
+            char log[51];
+            snprintf (log, 51, "Created process with pid %.8d (child-dir_read)", getpid());
+            sleep(1);
+            wrt_log (log);
+          }
           dir_read (sample);
           exit(0);
         }
@@ -90,7 +98,6 @@ void _rearange_def (defStruct *old, defStruct *new, char *filename) {
   defStruct_out (new, old -> file_out);
 
   new -> v_flag = old -> v_flag;
-  defStruct_log(new, old -> file_log);
   
   defStruct_target (new, filename);
 }
