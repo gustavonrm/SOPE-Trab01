@@ -17,12 +17,12 @@ int _get_hashSum (char *file, int alg, char *str);
 void _format_time (time_t time, char *str, int size_str);
 
 int file_finder (defStruct *def, char *str) {
-  wrt_to_str (str, def -> filename);
+  wrt_to_str (str, def -> target);
   
   char type[256];
   int ret;
 
-  ret = _get_type (def -> path, type);
+  ret = _get_type (def -> target, type);
   if (ret)
     my_exit (ret, "Error getting type");
 
@@ -30,7 +30,7 @@ int file_finder (defStruct *def, char *str) {
 
   char size[5], mode[4], aTime[20], mTime[20];
 
-  ret = _get_stat (def -> path, size, mode, aTime, mTime);
+  ret = _get_stat (def -> target, size, mode, aTime, mTime);
   if (ret)
     my_exit (ret, "Error creating stat struct");
 
@@ -43,7 +43,7 @@ int file_finder (defStruct *def, char *str) {
     for (int i = 0; i < 3; i++) {
       if (def->hash_alg[i]) {
         char alg[256];
-        ret = _get_hashSum (def -> path, i, alg);
+        ret = _get_hashSum (def -> target, i, alg);
         if (ret)
           my_exit (ret, "Error calculating cryptographic sums");
 

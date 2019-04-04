@@ -26,8 +26,7 @@ defStruct* new_defStruct () {
   
   def -> higher_pid = false;
 
-  def -> path = NULL;
-  def -> filename = NULL;
+  def -> target = NULL;
 
   return def;
 }
@@ -93,29 +92,16 @@ int defStruct_log (defStruct *def, char *file) {
   return SUCCESS;
 }
 
-int defStruct_path (defStruct *def, char *path) {
-  if (def == NULL || path == NULL) 
+int defStruct_target (defStruct *def, char *target) {
+  if (def == NULL || target == NULL) 
     return ERROR_FILES;
   
-  def -> path = (char *)malloc (sizeof (char) * strlen (path));
-  if (!def -> path)
+  def -> target = (char *)malloc (sizeof (char) * strlen (target));
+  if (!def -> target)
     return ERROR_ALLOC;
   
-  strcpy (def -> path, path);
+  strcpy (def -> target, target);
 
-  return SUCCESS;
-}
-
-int defStruct_filename (defStruct *def, char *filename) {
-  if (def == NULL || filename == NULL) 
-    return ERROR_FILES;
- 
-  def -> filename = (char *)malloc (sizeof (char) * strlen (filename));
-  if (!def -> filename)
-    return ERROR_ALLOC;
- 
-  strcpy (def -> filename, filename);
-  
   return SUCCESS;
 }
 
@@ -126,8 +112,7 @@ void delete_defStruct (defStruct *def){
   free (def -> hash_alg);
   free (def -> file_out);
   free (def -> file_log);
-  free (def -> path);
-  free (def -> filename);
+  free (def -> target);
 
   free (def);
 }
@@ -150,9 +135,6 @@ void _print_struct (defStruct *def) {
   if (def -> file_log != NULL)
     printf ("log file: %s\n", def -> file_log);
 
-  if (def -> path != NULL)
-    printf ("path: %s\n", def -> path);
-  
-  if (def -> filename != NULL)
-    printf ("filename: %s\n", def -> filename);
+  if (def -> target != NULL)
+    printf ("target: %s\n", def -> target);
 }

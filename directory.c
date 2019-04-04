@@ -1,16 +1,16 @@
 #include "directory.h"
 
 int _ignore_dot (char *filename);
-void _rearange_def (defStruct *old, defStruct *new, char *path, char *filename);
+void _rearange_def (defStruct *old, defStruct *new, char *filename);
 
 int dir_read (defStruct *def) {
-  DIR *dir;
+  DIR *dir;\
   struct dirent *dentry;
   struct stat stat_entry;
 
-  int size = strlen (def->path);
+  int size = strlen (def -> target);
   char main_folder[size];
-  strcpy (main_folder, def->path);
+  strcpy (main_folder, def -> target);
   
   //subfolders
   pid_t pid;
@@ -18,7 +18,7 @@ int dir_read (defStruct *def) {
   char str[512];
 
   // Open dir
-  dir = opendir (def->path);
+  dir = opendir (def -> target);
   if (!dir)
     my_exit (ERROR_OPEN, "Error opening directory");
 
@@ -39,7 +39,7 @@ int dir_read (defStruct *def) {
         if (!sample)
           my_exit(-1, "error creating new struct");
         
-        _rearange_def (def, sample, pathname, dentry -> d_name);
+        _rearange_def (def, sample, pathname);
       
         strcpy (str, "");
         file_finder( sample, str);
@@ -53,7 +53,7 @@ int dir_read (defStruct *def) {
         if (!sample)
           my_exit(-1, "error creating new struct");
         
-        _rearange_def (def, sample, pathname, dentry -> d_name);
+        _rearange_def (def, sample, pathname);
 
         if (def->o_flag)
           kill (def->higher_pid, SIGUSR1);
@@ -82,7 +82,7 @@ int _ignore_dot (char *filename) {
     return 1;
 }
 
-void _rearange_def (defStruct *old, defStruct *new, char *path, char *filename) {
+void _rearange_def (defStruct *old, defStruct *new, char *filename) {
   new -> h_flag = old -> h_flag;
   new -> hash_alg = old -> hash_alg;
 
@@ -92,8 +92,5 @@ void _rearange_def (defStruct *old, defStruct *new, char *path, char *filename) 
   new -> v_flag = old -> v_flag;
   defStruct_log(new, old -> file_log);
   
-  defStruct_filename (new, filename);
- 
-  defStruct_path (new, path);
- 
+  defStruct_target (new, filename);
 }

@@ -25,8 +25,7 @@ typedef struct {
 
   pid_t higher_pid; 
 
-  char *path;
-  char *filename;
+  char *target;
 
 } defStruct;
 
@@ -45,9 +44,7 @@ int defStruct_out (defStruct *def, char *file);
 
 int defStruct_log (defStruct *def, char *file);
 
-int defStruct_path (defStruct *def, char *path);
-
-int defStruct_filename (defStruct *def, char *filename);
+int defStruct_target (defStruct *def, char *target);
 
 void delete_defStruct (defStruct *def);
 

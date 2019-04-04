@@ -46,15 +46,11 @@ int parse_input (int argc, char *argv[], defStruct* def) {
     }  
   }
 
-  ret = defStruct_path (def, argv[argc-1]);
+  ret = defStruct_target (def, argv[argc-1]);
   if (ret)
     my_exit (ret, "Error allocating memory, target");
 
-  ret = defStruct_filename (def, argv[argc-1]);
-  if (ret)
-    my_exit (ret, "Error allocating memory, target");
-
-  if (!def -> r_flag && is_directory (def -> path))
+  if (!def -> r_flag && is_directory (def -> target))
     my_exit (ERROR_NFILE, "Input is not a valid file");
 
   return 0;
