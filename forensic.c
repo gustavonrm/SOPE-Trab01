@@ -52,7 +52,6 @@ int main (int argc, char *argv[]) {
       strcat (str, " ");
       strcat (str, argv[i]);
     }
-    sleep(1);
     wrt_log (str);
   }
 
@@ -82,7 +81,7 @@ int main (int argc, char *argv[]) {
   }
 
   delete_defStruct (def);
-  puts("Finish");
+  
   return 0;
 }
 

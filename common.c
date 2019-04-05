@@ -41,7 +41,6 @@ int my_execlp (char *cmd, char *filename, char *ret, int v_flag) {
     if (v_flag){
       char log[52];
       snprintf (log, 52, "Created process with pid %.8d (child-my_execlp)", getpid ());
-      sleep(1);
       wrt_log (log);
     }
 
@@ -57,7 +56,6 @@ int my_execlp (char *cmd, char *filename, char *ret, int v_flag) {
     if (v_flag){
       char log[53];
       snprintf (log, 53, "Created process with pid %.8d (parent-my_execlp)", pid);
-      sleep(1);
       wrt_log (log);
     }
     

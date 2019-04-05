@@ -68,37 +68,16 @@ int dir_read(defStruct *def)
           kill(def->higher_pid, SIGUSR1);
 
         pid = fork();
-        if (pid == 0)
+        if (pid == 0) 
         {
-          //ignore all SIGINTS
-          // sigset_t mask, old_mask;
-          struct sigaction action, orig_action;
-
-          memset(&action, 0, sizeof(action));
-          action.sa_handler = SIG_IGN;
-
-          sigaction(SIGINT, &action, &orig_action);
-          sigaction(SIGUSR1, &action, NULL);
-          sigaction(SIGUSR2, &action, NULL);
-          /*
-          //proc mask
-          sigemptyset(&mask);
-          sigaddset(&mask,SIGUSR1);
-          sigaddset(&mask,SIGUSR2);
-          sigaddset(&mask,SIGINT);
-          sigprocmask(SIG_SETMASK,&mask,&old_mask);
-*/
-
           if (v_flag)
           {
             char log[51];
             snprintf(log, 51, "Created process with pid %.8d (child-dir_read)", getpid());
-            sleep(1);
             wrt_log(log);
           }
           dir_read(sample);
 
-          sigaction(SIGINT, &orig_action, NULL);
           exit(0);
         }
         delete_defStruct(sample);

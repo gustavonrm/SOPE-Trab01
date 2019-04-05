@@ -1,7 +1,7 @@
 TARGET = forensic
 LIBS = -lm
 CC = gcc
-CFLAGS = -g -Wall -I. -D_GNU_SOURCE
+CFLAGS = -g -Wall -Wextra -Werror -I. -D_GNU_SOURCE
 
 .PHONY: default all clean
 

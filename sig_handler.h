@@ -11,12 +11,12 @@
 
 void start_handlers ();
 
-void setV_flag (int v);
+void setV_flag ();
 
-void sigint_handler (int signo);
+void sigint_handler ();
 
-void sigusr1_handler (int signo); 
+void sigusr1_handler (); 
 
-void sigusr2_handler (int signo);
+void sigusr2_handler ();
 
 #endif

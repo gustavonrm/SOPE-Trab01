@@ -6,7 +6,7 @@ int v_flag;
 static int n=0; //directories 
 static int m=0; //files
 
-void start_handlers (int v) {
+void start_handlers () {
   v_flag = 0;
 
   //SIGINT INSTALL
@@ -38,11 +38,10 @@ void setV_flag (int v) {
   v_flag = v;
 }
 
-void sigint_handler (int signo) {
+void sigint_handler () {
   if (v_flag){
     char *log = NULL;
     asprintf (&log, "SIGNAL INT received");
-    sleep(1);
     wrt_log (log);
     free(log);
   }
@@ -51,24 +50,22 @@ void sigint_handler (int signo) {
     perror("pkill");
 }
 
-void sigusr1_handler (int signo){
+void sigusr1_handler (){
   if (v_flag){
     char *log = NULL;
     asprintf (&log, "SIGNAL USR1 received");
-    sleep(1);
     wrt_log (log);
     free (log);
   }
 
   n++;
-  printf ("New directory: %d/%d directories/files at this time.\n",n,m); 
+  printf ("New directory: %d/%d (directories/files) at this time.\n",n,m); 
 }
 
-void sigusr2_handler (int signo){
+void sigusr2_handler (){
   if (v_flag) {
     char *log = NULL;
     asprintf (&log, "SIGNAL USR2 received");
-    sleep(1);
     wrt_log (log);
     free (log);
   }

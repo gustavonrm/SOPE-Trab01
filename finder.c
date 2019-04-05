@@ -56,7 +56,6 @@ int file_finder (defStruct *def, char *str) {
   if (def -> v_flag) {
     char *log = NULL;
     asprintf(&log, "ANALIZED %s with pid %.8d", def -> target, getpid());
-    sleep(1);
     wrt_log (log);
     free (log);
   }
