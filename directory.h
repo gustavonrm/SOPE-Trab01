@@ -22,5 +22,6 @@
 #define ERROR_FILE_DIR 12
 
 int dir_read (defStruct *def);
+void _get_vars(defStruct *def);
 
 #endif

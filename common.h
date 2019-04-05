@@ -33,4 +33,6 @@ void my_exit (int err, char *str);
 
 int is_directory (char *filename);
 
+void chopN(char *str, size_t n);
+
 #endif

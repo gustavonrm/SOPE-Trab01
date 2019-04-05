@@ -1,18 +1,21 @@
 #include "directory.h"
 
-int _ignore_dot (char *filename);
-void _rearange_def (defStruct *old, defStruct *new, char *filename);
+static int main_dir_size=0; 
 
-int dir_read (defStruct *def) {
+int _ignore_dot(char *filename);
+void _rearange_def(defStruct *old, defStruct *new, char *filename);
+
+int dir_read(defStruct *def)
+{
   DIR *dir;
   struct dirent *dentry;
   struct stat stat_entry;
 
-  int v_flag = def -> v_flag;
-  int size = strlen (def -> target);
+  int v_flag = def->v_flag;
+  int size = strlen(def->target);
   char main_folder[size];
-  strcpy (main_folder, def -> target);
-  
+  strcpy(main_folder, def->target);
+
   //subfolders
   pid_t pid;
 
@@ -20,106 +23,117 @@ int dir_read (defStruct *def) {
   str[0] = '\0';
 
   // Open dir
-  dir = opendir (def -> target);
+  dir = opendir(def->target);
   if (!dir)
-    my_exit (ERROR_OPEN, "Error opening directory");
+    my_exit(ERROR_OPEN, "Error opening directory");
 
   // Output files
-  while ((dentry = readdir (dir)) != NULL) {
+  while ((dentry = readdir(dir)) != NULL)
+  {
     //to test signal - sleep should be removed
     //sleep(1);
-    if (_ignore_dot(dentry->d_name)) {
+    if (_ignore_dot(dentry->d_name))
+    {
       char pathname[512] = {};
-      sprintf (pathname, "%s/%s", main_folder, dentry->d_name);
-      
-      if (lstat (pathname, &stat_entry))
-        my_exit (ERROR_LSTAT, "Error getting stat struct from folder"); // Assim ou com perror? a que se escolher tem que ser igual em todos
+      sprintf(pathname, "%s/%s", main_folder, dentry->d_name);
 
-      if (S_ISREG (stat_entry.st_mode)) {
+      if (lstat(pathname, &stat_entry))
+        my_exit(ERROR_LSTAT, "Error getting stat struct from folder"); // Assim ou com perror? a que se escolher tem que ser igual em todos
+
+      if (S_ISREG(stat_entry.st_mode))
+      {
         //READ
-        defStruct *sample = new_defStruct ();
+        defStruct *sample = new_defStruct();
         if (!sample)
           my_exit(-1, "error creating new struct");
-        
-        _rearange_def (def, sample, pathname);
-      
-        strcpy (str, "");
-        file_finder (sample, str);
 
-        file_write (sample->o_flag, str, def->higher_pid);
+        _rearange_def(def, sample, pathname);
 
-        delete_defStruct (sample);
+        strcpy(str, "");
+        file_finder(sample, str);
+        chopN(str, main_dir_size); //remove main folder name 
+        file_write(sample->o_flag, str, def->higher_pid);
 
+        delete_defStruct(sample);
       }
-      if (S_ISDIR (stat_entry.st_mode)) {
-        defStruct *sample = new_defStruct ();
+      if (S_ISDIR(stat_entry.st_mode))
+      {
+        defStruct *sample = new_defStruct();
         if (!sample)
           my_exit(-1, "error creating new struct");
-        
-        _rearange_def (def, sample, pathname);
+
+        _rearange_def(def, sample, pathname);
 
         if (def->o_flag)
-          kill (def->higher_pid, SIGUSR1);
+          kill(def->higher_pid, SIGUSR1);
 
-        pid = fork ();
-        if (pid == 0) {
+        pid = fork();
+        if (pid == 0)
+        {
           //ignore all SIGINTS
-          sigset_t mask, old_mask;
-          struct sigaction action,orig_action; 
+          // sigset_t mask, old_mask;
+          struct sigaction action, orig_action;
 
-          memset (&action, 0, sizeof(action)); 
+          memset(&action, 0, sizeof(action));
           action.sa_handler = SIG_IGN;
-/*
+
+          sigaction(SIGINT, &action, &orig_action);
+          sigaction(SIGUSR1, &action, NULL);
+          sigaction(SIGUSR2, &action, NULL);
+          /*
           //proc mask
           sigemptyset(&mask);
           sigaddset(&mask,SIGUSR1);
           sigaddset(&mask,SIGUSR2);
           sigaddset(&mask,SIGINT);
+          sigprocmask(SIG_SETMASK,&mask,&old_mask);
 */
-          //sigprocmask(SIG_BLOCK,&mask,&old_mask);
 
-          sigaction(SIGINT,&action,&orig_action); 
-          sigaction(SIGUSR1,&action,NULL); 
-          sigaction(SIGUSR2,&action,NULL); 
-
-          if (v_flag) {
+          if (v_flag)
+          {
             char log[51];
-            snprintf (log, 51, "Created process with pid %.8d (child-dir_read)", getpid());
+            snprintf(log, 51, "Created process with pid %.8d (child-dir_read)", getpid());
             sleep(1);
-            wrt_log (log);
+            wrt_log(log);
           }
-          dir_read (sample);
+          dir_read(sample);
 
-          sigaction(SIGINT,&orig_action,NULL); 
+          sigaction(SIGINT, &orig_action, NULL);
           exit(0);
         }
-        delete_defStruct (sample);
+        delete_defStruct(sample);
       }
     }
   }
 
-  closedir (dir);
+  closedir(dir);
 
   return 0;
 }
 
-int _ignore_dot (char *filename) {
-  if (strcmp (filename, ".") == 0)
+int _ignore_dot(char *filename)
+{
+  if (strcmp(filename, ".") == 0)
     return 0;
-  else if (strcmp (filename, "..") == 0)
+  else if (strcmp(filename, "..") == 0)
     return 0;
   else
     return 1;
 }
 
-void _rearange_def (defStruct *old, defStruct *new, char *filename) {
-  new -> h_flag = old -> h_flag;
-  new -> hash_alg = old -> hash_alg;
+void _rearange_def(defStruct *old, defStruct *new, char *filename)
+{
+  new->h_flag = old->h_flag;
+  new->hash_alg = old->hash_alg;
 
-  new -> o_flag = old -> o_flag;
-  defStruct_out (new, old -> file_out);
+  new->o_flag = old->o_flag;
+  defStruct_out(new, old->file_out);
 
-  new -> v_flag = old -> v_flag;
-  
-  defStruct_target (new, filename);
+  new->v_flag = old->v_flag;
+
+  defStruct_target(new, filename);
+}
+
+void _get_vars(defStruct *def){
+  main_dir_size = strlen(def->target)+1;
 }

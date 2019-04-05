@@ -102,3 +102,12 @@ void _wrt_to_file (char *str, int size) {
   fwrite ("\n", sizeof(char), 1, out_desc);
   fflush (out_desc);
 }
+void chopN(char *str, size_t n)
+{
+    assert(n != 0 && str != 0);
+    size_t len = strlen(str);
+    if (n > len)
+        n = len;
+    memmove(str, str+n, len - n + 1);
+}
+

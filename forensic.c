@@ -62,6 +62,7 @@ int main (int argc, char *argv[]) {
   if (def->r_flag) {
     if(def->o_flag)
           kill (def->higher_pid,SIGUSR1);
+    _get_vars(def);
     dir_read (def);
   } else { // Single file
     char str[512];
