@@ -64,12 +64,23 @@ int dir_read (defStruct *def) {
         pid = fork ();
         if (pid == 0) {
           //ignore all SIGINTS
+          sigset_t mask, old_mask;
           struct sigaction action,orig_action; 
+
+          memset (&action, 0, sizeof(action)); 
           action.sa_handler = SIG_IGN;
-          sigemptyset(&action.sa_mask);
-          action.sa_flags=0; 
+/*
+          //proc mask
+          sigemptyset(&mask);
+          sigaddset(&mask,SIGUSR1);
+          sigaddset(&mask,SIGUSR2);
+          sigaddset(&mask,SIGINT);
+*/
+          //sigprocmask(SIG_BLOCK,&mask,&old_mask);
 
           sigaction(SIGINT,&action,&orig_action); 
+          sigaction(SIGUSR1,&action,NULL); 
+          sigaction(SIGUSR2,&action,NULL); 
 
           if (v_flag) {
             char log[51];
@@ -79,7 +90,7 @@ int dir_read (defStruct *def) {
           }
           dir_read (sample);
 
-           sigaction(SIGINT,&orig_action,NULL); 
+          sigaction(SIGINT,&orig_action,NULL); 
           exit(0);
         }
         delete_defStruct (sample);
